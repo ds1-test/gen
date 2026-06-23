@@ -1,0 +1,19 @@
+import gensim.downloader as api
+
+model=api.load("word2vec-google-news-300")
+word=(input("Enter a word: "))
+similar_words=model.most_similar(word,topn=5)
+print("\n Top 5 similar words")
+words=[w for w,_ in similar_words]
+
+for w,s in similar_words:
+    print(w,":",round(s,4))
+    words.append(w)
+
+paragraph=f"""{word.capitalize()} is an important concept in its field.
+Most systems rely on {words[0]} and {words[1]} to perform effectively.
+Related ideas such as {words[2]} and {words[3]} are often discussed alongside {word}.
+The use of {words[4]} further enhances its application and usefulness.
+Therefore,these terms share strong semantic relationships."""
+print("\n Generated Paragrraph")
+print(paragraph)
