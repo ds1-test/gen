@@ -1,0 +1,29 @@
+import nltk
+import matplotlib.pyplot as plt
+from nltk.tokenize import word_tokenize
+from gensim.models import Word2Vec
+from sklearn.decomposition import PCA
+
+sentence=[
+    "Diabetes affects blood sugar level",
+    "Hypertension causes heart problems",
+    "Pneumonia is treated with antibiotics",
+    "Insulin helps diabetes patients"
+]
+nltk.download("punkt_tab")
+
+processed=[word_tokenize(s.lower()) for s in sentence]
+model=Word2Vec(processed,vector_size=100,window=3,min_count=1)
+words=model.wv.index_to_key
+vectors=[model.wv[w] for w in words]
+r=PCA(n_components=2).fit_transform(vectors)
+
+print("Vocabulary: ",words)
+print("Simialar words to diabetes: ",model.wv.most_similar("diabetes"))
+
+plt.figure(figsize=(8,6))
+for i,w in enumerate(words):
+    plt.scatter(r[i,0],r[i,1])
+    plt.text(r[i,0],r[i,1],w)
+plt.title("Word Embeddings Visualization using PCA")
+plt.show()
