@@ -1,0 +1,31 @@
+import cohere
+import string
+import gensim.downloader as api
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+
+co=cohere.ClientV2("htaaEG4kVtQqSahUeAogQM13nEo0QnZ8idu6bzqT")
+model=api.load("glove-wiki-gigaword-50")
+
+def similar_words(text):
+    words=[w for w in word_tokenize(text.lower())
+           if w not in stopwords.words("english") and w not in string.punctuation]
+    return " ".join({s for w in words if w in model.key_to_index 
+                     for s,_ in model.most_similar(w,topn=3)})
+def generate(prompt):
+    return co.chat(
+        model="command-a-03-2025",
+        messages=[{"role":"user","content":prompt}]
+    ).message.content[0].text
+
+prompt="What is the use of Artificial Intelligence in modern society?"
+print("\n Cohere Response: \n",generate(prompt))
+
+original_prompt="Describe the future of Artificial Intelligence in education."
+enriched_prompt=original_prompt+" "+similar_words(original_prompt)
+
+print("\n Original Prompt: ",original_prompt)
+print("\n Generated Response (Original Prompt): \n",generate(original_prompt))
+
+print("\n Enriched Prompt: ",enriched_prompt)
+print("\n Generated Response (Enriched Prompt): \n",generate(enriched_prompt))
