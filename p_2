@@ -1,0 +1,27 @@
+import gensim.downloader as api
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+
+model=api.load("word2vec-google-news-300")
+
+words=['computer','internet','software','hardware','network',
+       'data','server','database','programming','algorithm']
+
+pca=PCA(n_components=2).fit_transform([model[w] for w in words])
+
+plt.figure(figsize=(10,8))
+for (x,y),w in zip(pca,words):
+    plt.scatter(x,y,color='blue')
+    plt.text(x+0.02,y+0.02,w)
+plt.title('2D PCA Projection of Technology-Related Word Embeddings')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.grid()
+plt.show()
+
+try:
+    print("Top 5 words similar to 'internet': ")
+    for w,s in model.most_similar('internet',topn=5):
+        print(f" {w}: similarity={s:.4f}")
+except KeyError:
+    print('word not found in vocabulary')
