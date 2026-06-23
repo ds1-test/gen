@@ -1,0 +1,16 @@
+import os
+from langchain_cohere import ChatCohere
+from langchain_core.prompts import PromptTemplate
+
+os.environ["COHERE_API_KEY"]="htaaEG4kVtQqSahUeAogQM13nEo0QnZ8idu6bzqT"
+with open("C:/Users/KEERTHAN BM/OneDrive/Desktop/sample.txt","r") as file:
+    text=file.read()
+
+llm=ChatCohere()
+prompt=PromptTemplate(
+    input_variables=["text"],
+    template="Summarize this document in bullet points \n {text}"
+)
+chain=prompt|llm
+response=chain.invoke({"text":text})
+print(response.content)
